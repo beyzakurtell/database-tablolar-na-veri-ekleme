@@ -1,0 +1,44 @@
+*&---------------------------------------------------------------------*
+*& Report  ZP5003_P006
+*&
+*&---------------------------------------------------------------------*
+*&
+*&
+*&---------------------------------------------------------------------*
+
+REPORT  ZP5003_P006.
+
+SELECTION-SCREEN BEGIN OF BLOCK blk1 WITH FRAME TITLE text-001.
+PARAMETERS: p_faturn TYPE ZP5003_FATURA_NO_DE,
+            p_stc_id TYPE ZP5003_SATICI_ID_DE,
+            p_ftrtrh TYPE ZP5003_FATURA_TARIHI_DE,
+            p_matnr TYPE ZP5003_MATNR_DE,
+            p_meins TYPE ZP5003_MEINS_DE,
+            p_menge TYPE ZP5003_MENGE_DE,
+            p_birimf TYPE ZP5003_BIRIM_FIYAT_DE.
+
+SELECTION-SCREEN END OF BLOCK blk1.
+
+
+DATA: gs_fatura TYPE ZP5003_FATURA_T,
+      gt_fatura TYPE ZP5003_FATURA_T,
+      gs_stok TYPE ZP5003_STOK_T,
+      gt_stok TYPE ZP5003_STOK_T OCCURS 0.
+
+
+*SATICI FATURASI TABLOSU VERİ GİRİŞİ
+gs_fatura-FATURA_NO = p_faturn.
+gs_fatura-SATICI_ID = p_stc_id.
+gs_fatura-FATURA_TARIHI = p_ftrtrh.
+gs_fatura-MATNR = p_matnr.
+gs_fatura-MENGE = p_menge.
+gs_fatura-BIRIM_FIYAT = p_birimf.
+INSERT ZP5003_FATURA_T FROM gs_fatura.
+
+gs_stok-FATURA_NO = p_faturn.
+gs_stok-MATNR = p_matnr.
+gs_stok-MEINS = p_meins.
+gs_stok-MENGE = 0 + p_menge.
+INSERT ZP5003_STOK_T FROM gs_stok.
+
+WRITE: 'FATURA BİLGİLERİ KAYDEDİLDİ VE STOK GÜNCELLENDİ'.
