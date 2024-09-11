@@ -1,0 +1,88 @@
+*&---------------------------------------------------------------------*
+*& Report  ZP5003_P005
+*&
+*&---------------------------------------------------------------------*
+*&
+*&
+*&---------------------------------------------------------------------*
+
+REPORT  ZP5003_P005.
+
+DATA: gv_mtnr TYPE ZP5003_MATNR_DE,
+      gv_maktx TYPE ZP5003_MAKTX_DE,
+      gv_meins TYPE ZP5003_MEINS_DE,
+      gv_matkl TYPE ZP5003_MATKL_DE,
+      gv_ekgrp TYPE ZP5003_EKGRP_DE,
+      gs_mattnim_t TYPE ZP5003_MATTNIM_T,
+      gt_mattnim_t TYPE ZP5003_MATTNIM_T,
+
+
+      gv_fatura_no TYPE ZP5003_FATURA_NO_DE,
+      gv_satici_id TYPE ZP5003_SATICI_ID_DE,
+      gv_fatura_tarihi TYPE ZP5003_FATURA_TARIHI_DE,
+      gv_menge TYPE ZP5003_MENGE_DE,
+      gv_birim_fiyat TYPE ZP5003_BIRIM_FIYAT_DE,
+      gs_fatura TYPE ZP5003_FATURA_T,
+      gt_fatura TYPE ZP5003_FATURA_T,
+
+      gs_stok TYPE ZP5003_STOK_T,
+      gt_stok TYPE ZP5003_STOK_T OCCURS 0,
+
+      gv_musteri_id TYPE ZP5003_MUSTERI_ID_DE,
+      gs_satisfa TYPE ZP5003_SATISFA_T,
+      gt_satisfa TYPE ZP5003_SATISFA_T.
+
+
+
+*MALZEME TANIMI TABLOSU VERİ GİRİŞİ
+gs_mattnim_t-MATNR = '1'.
+gs_mattnim_t-MAKTX = 'ARABICA'.
+gs_mattnim_t-MEINS = 'GR'.
+gs_mattnim_t-MATKL = 'KH'.
+gs_mattnim_t-EKGRP = 'A'.
+INSERT ZP5003_MATTNIM_T FROM gs_mattnim_t.
+
+
+*SATICI FATURASI TABLOSU VERİ GİRİŞİ
+gs_fatura-FATURA_NO = '1'.
+gs_fatura-SATICI_ID = 'B101'.
+gs_fatura-FATURA_TARIHI = '20240717'.
+gs_fatura-MATNR = '1'.
+gs_fatura-MENGE = '1000'.
+gs_fatura-BIRIM_FIYAT = '500'.
+INSERT ZP5003_FATURA_T FROM gs_fatura.
+
+*STOK TABLOSU VERİ GİRİŞİ
+gs_stok-MATNR = '1'.
+gs_stok-MEINS = 'GR'.
+gs_stok-MENGE = '1000000'.
+INSERT ZP5003_STOK_T FROM gs_stok.
+
+
+*SATIŞ FATURASI VERİ GİRİŞİ
+gs_satisfa-FATURA_NO = '2'.
+gs_satisfa-MUSTERI_ID = 'M99'.
+gs_satisfa-FATURA_TARIHI = '20240717'.
+gs_satisfa-MATNR = '1'.
+gs_satisfa-MENGE = '50'.
+gs_satisfa-BIRIM_FIYAT = '800'.
+INSERT ZP5003_SATISFA_T FROM gs_satisfa.
+
+
+*
+
+*UPDATE ZP5003_STOK_T SET MENGE = MENGE + gs_fatura-MENGE
+* WHERE MATNR = gs_fatura-MATNR.
+
+*DELETE FROM ZP5003_SATISFA_T WHERE FATURA_NO = '2'.
+
+SELECT * INTO CORRESPONDING FIELDS OF TABLE gt_stok
+  FROM ZP5003_FATURA_T.
+
+*INSERT ZP5003_STOK_T FROM TABLE gt_stok.
+
+*SELECT MEINS INTO TABLE gt_stok
+*  FROM ZP5003_FATURA_T
+*  LEFT JOIN ZP5003_MATTNIM_T ON ZP5003_FATURA_T~MATNR = ZP5003_MATTNIM_T~MATNR.
+*BREAK-POINT.
+*INSERT ZP5003_STOK_T FROM TABLE gt_stok.
